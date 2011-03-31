@@ -22,7 +22,7 @@ DirectedGraph.prototype = {
 	* or bydirectional.
 	*/
 	setType: function(how){
-		if(!this.isEmpty()){
+		if(this.isEmpty()){
 			switch(how){
 				case "unidirectional":
 					this._isBidirectional=false;
@@ -43,7 +43,7 @@ DirectedGraph.prototype = {
 	* @return True if is empty, false if it isn't
 	*/
 	isEmpty: function(){
-		if(this._nodes.lenght==0)
+		if(this._nodes.length==0)
 			return true;
 		return false;
 	},
@@ -70,6 +70,15 @@ DirectedGraph.prototype = {
 			return true;
 		}
 		return false;
+	},
+	/*
+	* addNodesFromArray
+	* Adds a set of nodes parsing a given array and pushing
+	* them using the addNode function
+	*/
+	addNodesFromArray: function(arr){
+		for(var i=0;i<arr.length;i++)
+			this.addNode(arr[i]);
 	},
 	/*
 	* addEdge
@@ -99,6 +108,15 @@ DirectedGraph.prototype = {
 				this._edges.push([to,from]);
 		}
 		return true;
+	},
+	/*
+	* addEdgesFromArray
+	* Adds a set of edges parsing a given array and pushing
+	* them using the addEdge function
+	*/
+	addEdgesFromArray: function(arr){
+		for(var i=0;i<arr.length;i++)
+			this.addEdge(arr[i]);
 	},
 	/*
 	* containsNode
