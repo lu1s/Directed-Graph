@@ -11,6 +11,7 @@ function DirectedGraph(){
 	this._isBidirectional = false;
 	this._nodes = new Array();
 	this._edges = new Array();
+	this._matrix = null;
 };
 
 DirectedGraph.prototype = {
@@ -93,21 +94,23 @@ DirectedGraph.prototype = {
 	* @return true if it was added, false if it wasn't
 	*/
 	addEdge: function(from,to,value){
-		if(this.containsEdge(from,to))
-			return false;
-		this.addNode(from);
-		this.addNode(to);
-		if(value)
-			this._edges.push([from,to,value]);
-		else
-			this._edges.push([from,to]);
-		if(this._isBidirectional){
+		var ret = false;
+		if(!this.containsEdge(from,to)){
+			this.addNode(from);
+			this.addNode(to);
 			if(value)
-				this._edges.push([to,from,value]);
+				this._edges.push([from,to,value]);
 			else
-				this._edges.push([to,from]);
+				this._edges.push([from,to]);
+			if(this._isBidirectional){
+				if(value)
+					this._edges.push([to,from,value]);
+				else
+					this._edges.push([to,from]);
+			}
+			ret = true;
 		}
-		return true;
+		return ret;
 	},
 	/*
 	* addEdgesFromArray
@@ -115,8 +118,12 @@ DirectedGraph.prototype = {
 	* them using the addEdge function
 	*/
 	addEdgesFromArray: function(arr){
-		for(var i=0;i<arr.length;i++)
-			this.addEdge(arr[i]);
+		for(var i=0;i<arr.length;i++){
+			if(arr[i][2])
+				this.addEdge(arr[i][0],arr[i][1],arr[i][2]);
+			else
+				this.addEdge(arr[i][0],arr[i][1]);
+		}
 	},
 	/*
 	* containsNode
@@ -185,5 +192,64 @@ DirectedGraph.prototype = {
 		if(arr.length==0)
 			return null;
 		return arr;
+	},
+	/*
+	* sort
+	* Sorts from lowest to highest value both arrays (nodes and edges)
+	*/
+	sort: function(){
+		this._nodes.sort();
+		this._edges.sort();
+	},
+	/*
+	* buildMatrix
+	* Creates the adjacency matrix for the Directed Graph and stores it
+	* on the _matrix bidimentional array.
+	*/
+	buildMatrix: function(){
+		var length = this._nodes.length;
+		this._matrix = new Array(length);
+		for(var i=0;i<this._matrix.length;i++)
+			this._matrix[i] = new Array(length);
+		for(var i=0;i<this._nodes.length;i++)
+			for(var j=0;j<this._nodes.length;j++){
+				if(this.containsEdge(this._nodes[i],this._nodes[j]))
+					this._matrix[i][j]=true;
+				else
+					this._matrix[i][j]=false;
+			}
+	},
+	/*
+	* drawMatrix
+	* If the matrix was alredy built, and the given id of an html
+	* element exists, the function will draw the adjacent matrix
+	* on an html table.
+	* To format the table you can draw the matrix inside a div and
+	* manipulate it with css
+	*/
+	drawMatrix: function(where){
+		if(document.getElementById(where)&&this._matrix){
+			var r = '<table><thead><tr><th></th>', length = this._nodes.length;
+			for(var i=0;i<length;i++)
+				r+='<th>'+this._nodes[i]+'</th>';
+			r+='</tr></thead><tbody>';
+			for(var i=0;i<length;i++){
+				r+='<tr><td>'+this._nodes[i]+'</td>';
+				for(var j=0;j<length;j++){
+					if(this._matrix[i][j])
+						r+='<td>1</td>';
+					else
+						r+='<td>0</td>';
+				}
+				r+='</tr>';
+			}
+			r+='</tbody></table>';
+			try{
+				document.getElementById(where).innerHTML = r;
+			}
+			catch(e){
+				alert("DirectedGraph.drawMatrix() error.\nVerify that the html object supports innerHTML");
+			}
+		}
 	}
 }
