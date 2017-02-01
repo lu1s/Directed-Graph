@@ -1,11 +1,3 @@
-DirectedGraph
+# DirectedGraph
 
-DirectedGraph is a javascript object that represents a directed graph data structure with certaing useful functions on it. It can be used with GraphDracula Javascript Library to show them (http://www.graphdracula.net/)
-
-To know more about it and use it correctly, read the commented code on the DirectedGraph.js file.
-
-Soon i'll update this repository with examples implementing the GraphDracula graphic interface.
-
-Thanks and enjoy.
-
-Luis
+Javascript object that represents a directed graph data structure with certaing useful functions on it. It can be used with GraphDracula Javascript Library to show them (http://www.graphdracula.net/)
